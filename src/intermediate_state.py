@@ -68,12 +68,15 @@ class IntermediateState:
         for glob in global_variables:
             glob.write(self)
 
+        for func in functions:
+            func.write(self)
+
     def add_to_init(self):
         pass
 
     def write_program(self):
-        return self.constants.write_program() + '\n' + self.globals.write_program() + '\n' + \
-               self.functions.write_program() + '\n' + self.init.write_program()
+        return self.constants.write_program() + '\n\n' + self.globals.write_program() + '\n\n' + \
+               self.functions.write_program() + '\n\n' + self.init.write_program()
 
     # def append_line(self, line):
     #     TextBlock.current.append_line(line)

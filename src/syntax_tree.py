@@ -63,7 +63,8 @@ class Node:
             '!': ' Not ',
             '!=': '<>',
             '&&': ' And ',
-            '||': ' Or '
+            '||': ' Or ',
+            '%': 'mod'
         }
         string = self.string
         if string in token_translation:

@@ -13,8 +13,7 @@ class Declaration(Node):
             return ''
 
     def write(self, int_state, block=None):
-        assert len(self.children) == 5 or len(self.children) == 3
-        return ' ' + self.children[1].string + self.init() + ' : ' + self.children[0].string + ';'
+        assert False
 
 
 Node.node_map['DECLARATION'] = Declaration

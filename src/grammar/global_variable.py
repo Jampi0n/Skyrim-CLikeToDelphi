@@ -8,9 +8,9 @@ class GlobalVariable(Node):
 
     def write(self, int_state, block=None):
         declaration = self.children[0]
-        assert len(declaration.children) == 3 or len(declaration.children) == 5
+        assert len(declaration.children) == 2 or len(declaration.children) == 4
         int_state.globals.append_line(declaration.children[1].string + ' : ' + declaration.children[0].string + ';')
-        if len(declaration.children) == 5:
+        if len(declaration.children) == 4:
             int_state.init.append_line(declaration.children[1].string + ' := ')
             declaration.children[3].write(int_state, int_state.init)
             int_state.init.append(';')
