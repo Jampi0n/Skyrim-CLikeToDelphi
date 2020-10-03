@@ -1,4 +1,4 @@
-from src.grammar import CLike
+from src.grammar.grammar import CLike
 from src.syntax_tree import SyntaxTree
 from src.intermediate_state import IntermediateState
 

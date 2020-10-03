@@ -1,4 +1,5 @@
-from src.syntax_tree import SyntaxTree, Node
+from src.grammar import *
+from src.syntax_tree import *
 
 
 class IntermediateState:
@@ -8,8 +9,7 @@ class IntermediateState:
         self.indentation = 0
         self.indentation_string = ''
 
-        self.extract_constants()
-        self.extract_globals()
+        self.top_level()
 
     def write_line(self, line):
         print(line)
@@ -27,38 +27,30 @@ class IntermediateState:
     def update_indentation(self):
         self.indentation_string = ' ' * 4 * self.indentation
 
-    def extract_constants(self):
+    def top_level(self):
         constants = []
+        global_variables = []
+        functions = []
         for node in self.syntax_tree.get_top_level():
-            if node.name == 'CONSTANT':
+            if isinstance(node, constant.Constant):
                 constants.append(node)
+            elif isinstance(node, global_variable.GlobalVariable):
+                global_variables.append(node)
+            elif isinstance(node, function.Function):
+                functions.append(node)
 
         if len(constants) > 0:
             self.write_line('const')
             self.indent()
             for const in constants:
-                const: Node
-                self.write_line(const.children[1].string + ' := ' + const.children[3].string)
+                self.write_line(const.write())
             self.unindent()
-
-    def extract_globals(self):
-        global_variables = []
-        for node in self.syntax_tree.get_top_level():
-            if node.name == 'GLOBAL':
-                global_variables.append(node)
 
         if len(global_variables) > 0:
             self.write_line('var')
             self.indent()
             for glob in global_variables:
-                glob: Node
-                declaration = glob.children[0]
-                if len(declaration.children) > 2:
-                    self.write_line(
-                        declaration.children[1].string + ' := ' + declaration.children[3].string + ' : ' +
-                        declaration.children[0].string + ';')
-                else:
-                    self.write_line(declaration.children[1].string + ' : ' + declaration.children[0].string + ';')
+                self.write_line(glob.write())
             self.unindent()
 
     def write_program(self):
