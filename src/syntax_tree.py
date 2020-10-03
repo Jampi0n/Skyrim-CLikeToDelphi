@@ -1,6 +1,7 @@
 from pyleri import Grammar
 from graphviz import Digraph
 from typing import *
+# from src.intermediate_state import IntermediateState
 import json
 
 
@@ -57,8 +58,17 @@ class Node:
         for c in self.children:
             c.draw(graph, self)
 
-    def write(self):
-        return self.string
+    def write(self, int_state, block):
+        token_translation = {
+            '!': ' Not ',
+            '!=': '<>',
+            '&&': ' And ',
+            '||': ' Or '
+        }
+        string = self.string
+        if string in token_translation:
+            string = token_translation[string]
+        block.append(string)
 
 
 class Leaf(Node):
@@ -77,7 +87,8 @@ class SyntaxTree:
             is_grammar = hasattr(node.element, 'name')
             is_symbol = node.element.__class__.__name__ in ['Keyword', 'Token']
 
-            name = 'None'
+            is_real_grammar = is_grammar
+
             if is_grammar:
                 name = node.element.name
             elif node.element.__class__.__name__ == 'This':
@@ -88,13 +99,11 @@ class SyntaxTree:
             else:
                 name = node.element.__class__.__name__
 
-            # node_object = Node(parent, node.start, node.end, name, node.element.__class__.__name__, node.string)
-            #
-            # current = node_object if is_grammar else current
-            #
-            # for c in node.children:
-            #     node_object.add_child(parse_tree(c, node_object, current))
-            # return node_object
+            if parent is not None:
+                if parent.name == 'EXPRESSION':
+                    if node.element.__class__.__name__ == 'Optional':
+                        is_grammar = True
+                        name = 'ARGUMENT_LIST'
 
             if is_grammar or is_symbol:
                 node_class = Node.node_map[name] if is_grammar else Node
@@ -102,7 +111,7 @@ class SyntaxTree:
                 node_object = node_class(parent, node.start, node.end, name, node.element.__class__.__name__,
                                          node.string)
 
-                if is_grammar:
+                if is_real_grammar:
                     current = node_object
 
                 if node_object.allow_children():
@@ -124,7 +133,7 @@ class SyntaxTree:
     def draw(self):
         graph = Digraph(comment='syntax tree')
         self.root.draw(graph, None)
-        graph.render('out/syntax_tree.gv', view=True)
+        graph.render('out/syntax_tree.gv', view=False)
 
     def get_top_level(self):
         return [c.children[0] for c in self.root.children]

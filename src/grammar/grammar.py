@@ -30,10 +30,6 @@ class CLike(Grammar):
     ARRAY = seq(VARIABLE_NAME, '[', EXPRESSION, ']')
     VARIABLE = Choice(ARRAY, VARIABLE_NAME)
 
-    # BINARY = Ref()
-    # EXPRESSION = Prio(BINARY, seq('(', THIS, ')'), seq(Tokens('- !'), THIS), #<= >= == != > < + - * / seq(THIS, '*', THIS)
-    #                  LITERAL, seq(FUNCTION_NAME, '(', opt(seq(Repeat(seq(THIS, ',')), THIS)), ')'), VARIABLE)
-
     EXPRESSION = Prio(
         LITERAL,
         VARIABLE,
