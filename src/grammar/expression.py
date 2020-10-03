@@ -20,7 +20,7 @@ class Variable(Node):
         super().__init__(parent, start, end, name, element, string)
 
     def write(self, int_state, block=None):
-        assert False
+        self.children[0].write(int_state, block)
 
 
 Node.node_map['VARIABLE'] = Variable
@@ -37,3 +37,12 @@ class ArgumentList(Node):
 
 
 Node.node_map['ARGUMENT_LIST'] = ArgumentList
+
+
+class Prefix(Node):
+    def write(self, int_state, block=None):
+        for c in self.children:
+            c.write(int_state, block)
+
+
+Node.node_map['PREFIX'] = Prefix

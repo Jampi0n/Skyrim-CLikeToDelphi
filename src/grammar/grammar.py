@@ -15,26 +15,30 @@ class CLike(Grammar):
     NUMBER_LITERAL = Regex(NUMBER)
     LITERAL = Choice(STRING_LITERAL, NUMBER_LITERAL)
     EXPRESSION = Ref()
+    COMMENT = Regex('//.*\\n')
     STATEMENT = Ref()
-    STATEMENT_BLOCK = seq('{', Repeat(seq(STATEMENT, ';')), '}')
+    STATEMENT_BLOCK = seq('{', Repeat(Choice(STATEMENT, COMMENT)), '}')
     DECLARATION = seq(TYPE, VARIABLE_NAME, opt(seq('=', EXPRESSION)))
     GLOBAL = seq(DECLARATION, ';')
     CONSTANT = seq(Keyword('const'), VARIABLE_NAME, '=', LITERAL, ';')
+
+    # PREFIX = Repeat(seq(EXPRESSION, '.'))
 
     PARAMETER = seq(TYPE, VARIABLE_NAME)
     PARAMETER_LIST = opt(seq(Repeat(seq(PARAMETER, ',')), PARAMETER))
     FUNCTION_NAME = Regex(WORD)
     FUNCTION = seq(TYPE, FUNCTION_NAME, '(', PARAMETER_LIST, ')', STATEMENT_BLOCK)
 
-    ARRAY = seq(VARIABLE_NAME, '[', EXPRESSION, ']')
-    VARIABLE = Choice(ARRAY, VARIABLE_NAME)
-
     EXPRESSION = Prio(
         LITERAL,
-        VARIABLE,
+        VARIABLE_NAME,
+
         seq('!', THIS),
         seq('-', THIS),
+
+        seq(THIS, '(', opt(seq(Repeat(seq(THIS, ',')), THIS)), ')'),  # Repeat(seq(THIS, '.')),
         seq('(', THIS, ')'),
+        seq(THIS, '.', THIS),
         seq(THIS, '*', THIS),
         seq(THIS, '/', THIS),
         seq(THIS, '%', THIS),
@@ -48,21 +52,22 @@ class CLike(Grammar):
         seq(THIS, '!=', THIS),
         seq(THIS, '&&', THIS),
         seq(THIS, '||', THIS),
-        seq(FUNCTION_NAME, '(', opt(seq(Repeat(seq(THIS, ',')), THIS)), ')'),
+
     )
 
-    ASSIGNMENT = seq(VARIABLE, '=', EXPRESSION)
+    ASSIGNMENT_OP = Tokens('= += -= *= /=')
+    ASSIGNMENT = seq(VARIABLE_NAME, ASSIGNMENT_OP, EXPRESSION)
 
-    ELSE = seq(Keyword('else'), Choice(STATEMENT_BLOCK, seq(STATEMENT, ';')))
-    IF = seq(Keyword('if'), EXPRESSION, Choice(STATEMENT_BLOCK, seq(STATEMENT, ';')), opt(ELSE))
-    WHILE = seq(Keyword('while'), '(', EXPRESSION, ')', Choice(STATEMENT_BLOCK, seq(STATEMENT, ';')))
-    FOR = seq(Keyword('for'), '(', STATEMENT, ';', EXPRESSION, ';', STATEMENT, ')',
-              Choice(STATEMENT_BLOCK, seq(STATEMENT, ';')))
+    ELSE = seq(Keyword('else'), Choice(STATEMENT_BLOCK, STATEMENT))
+    IF = seq(Keyword('if'), EXPRESSION, Choice(STATEMENT_BLOCK, STATEMENT), opt(ELSE))
+    WHILE = seq(Keyword('while'), '(', EXPRESSION, ')', Choice(STATEMENT_BLOCK, STATEMENT))
+    FOR = seq(Keyword('for'), '(', Choice(DECLARATION, ASSIGNMENT), ';', EXPRESSION, ';', ASSIGNMENT, ')',
+              Choice(STATEMENT_BLOCK, STATEMENT))
 
-    STATEMENT = Choice(
-        seq(FUNCTION_NAME, '(', opt(seq(Repeat(seq(EXPRESSION, ',')), EXPRESSION)), ')'),
-        ASSIGNMENT, DECLARATION, IF, WHILE, FOR)
+    EXPRESSION_STATEMENT = seq(EXPRESSION, ';')
 
-    PROGRAM_PART = Choice(CONSTANT, GLOBAL, FUNCTION)
+    STATEMENT = Choice(EXPRESSION_STATEMENT, seq(ASSIGNMENT, ';'), seq(DECLARATION, ';'), IF, WHILE, FOR)
+
+    PROGRAM_PART = Choice(CONSTANT, GLOBAL, FUNCTION, COMMENT)
 
     START = Repeat(PROGRAM_PART)

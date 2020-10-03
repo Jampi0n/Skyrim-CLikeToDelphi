@@ -40,12 +40,13 @@ class Function(Node):
 
         block.append_line('begin')
         block.indent()
-        for d in declarations:
-            if len(d.children) == 4:
-                block.append_line(d.children[1].string + ' := ')
-                d.children[3].write(int_state, block)
-                block.append(';')
-        # self.children[5].write(int_state, block)
+        # for d in declarations:
+        #     print(d.string)
+        #     if len(d.children) == 4:
+        #         block.append_line(d.children[1].string + ' := ')
+        #         d.children[3].write(int_state, block)
+        #         block.append(';')
+        self.children[5].write(int_state, block)
         block.unindent()
         block.append_line('end;')
 

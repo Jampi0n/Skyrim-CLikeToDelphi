@@ -12,12 +12,10 @@ class TextBlock:
         self.update_indentation()
 
     def append_line(self, line):
-        print(line)
         self.lines.append(self.indentation_string + line)
         TextBlock.current = self
 
     def append(self, string):
-        print(string)
         self.lines[len(self.lines) - 1] += string
         TextBlock.current = self
 
