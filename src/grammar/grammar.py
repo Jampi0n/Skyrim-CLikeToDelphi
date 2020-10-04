@@ -63,7 +63,8 @@ class CLike(Grammar):
               Choice(STATEMENT_BLOCK, STATEMENT))
 
     CATCH = seq(Keyword('catch'), '(', PARAMETER, ')', Choice(STATEMENT_BLOCK, STATEMENT))
-    TRY = seq(Keyword('try'), Choice(STATEMENT_BLOCK, STATEMENT), opt(CATCH))
+    FINALLY = seq(Keyword('finally'), Choice(STATEMENT_BLOCK, STATEMENT))
+    TRY = seq(Keyword('try'), Choice(STATEMENT_BLOCK, STATEMENT), opt(CATCH), opt(FINALLY))
 
     EXPRESSION_STATEMENT = seq(EXPRESSION, ';')
 

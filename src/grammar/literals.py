@@ -20,6 +20,8 @@ def translate_string(string):
             else:
                 if char == '\\':
                     escape = True
+                elif char == '\'':
+                    result += '\'\''
                 else:
                     result += char
     except KeyError:

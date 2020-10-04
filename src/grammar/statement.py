@@ -1,5 +1,6 @@
 from src.syntax_tree import *
 from src.grammar.comment import Comment
+from src.grammar.declaration import Declaration
 
 
 class Statement(Node):
@@ -8,8 +9,15 @@ class Statement(Node):
         super().__init__(parent, start, end, name, element, string)
 
     def write(self, int_state, block=None):
-        for c in self.children:
-            c.write(int_state, block)
+        if isinstance(self.children[0], Declaration):
+            declaration = self.children[0]
+            declaration.write(int_state, block)
+            if declaration.is_init():
+                self.children[1].write(int_state, block)
+
+        else:
+            for c in self.children:
+                c.write(int_state, block)
 
 
 Node.node_map['STATEMENT'] = Statement
@@ -151,10 +159,11 @@ class Try(Node):
         block.indent()
         self.children[1].write(int_state, block)
         block.unindent()
-        if len(self.children) < 3:
-            block.append_line('end;')
-        else:
-            self.children[2].write(int_state, block)
+
+        for i in range(2, len(self.children)):
+            self.children[i].write(int_state, block)
+
+        block.append_line('end;')
 
 
 Node.node_map['TRY'] = Try
@@ -174,10 +183,20 @@ class Catch(Node):
         block.unindent()
         block.append_line('end;')
         block.unindent()
-        block.append_line('end;')
 
 
 Node.node_map['CATCH'] = Catch
+
+
+class Finally(Node):
+    def write(self, int_state, block=None):
+        block.append_line('finally')
+        block.indent()
+        self.children[1].write(int_state, block)
+        block.unindent()
+
+
+Node.node_map['FINALLY'] = Finally
 
 
 class Throw(Node):
