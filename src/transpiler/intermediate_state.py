@@ -126,9 +126,3 @@ class IntermediateState:
         result += '\n\nend.'
 
         return result
-
-    # def append_line(self, line):
-    #     TextBlock.current.append_line(line)
-    #
-    # def append(self, string):
-    #     TextBlock.current.append(string)

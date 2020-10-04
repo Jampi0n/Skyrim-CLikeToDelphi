@@ -136,9 +136,6 @@ class SyntaxTree:
                 return None
 
         self.root = parse_tree(start, None, None)
-
-        # print(self.root)
-        # print(json.dumps(view_parse_tree(result), indent=2))
         # self.draw()
 
     def draw(self):
@@ -148,26 +145,3 @@ class SyntaxTree:
 
     def get_top_level(self):
         return [c.children[0] for c in self.root.children]
-
-
-# Returns properties of a node object as a dictionary:
-def node_props(node, children):
-    return {
-        'start': node.start,
-        'end': node.end,
-        'name': node.element.name if hasattr(node.element, 'name') else None,
-        'element': node.element.__class__.__name__,
-        'string': node.string,
-        'children': children}
-
-
-# Recursive method to get the children of a node object:
-def get_children(children):
-    return [node_props(c, get_children(c.children)) for c in children]
-
-
-# View the parse tree:
-def view_parse_tree(res):
-    start = res.tree.children[0] \
-        if res.tree.children else res.tree
-    return node_props(start, get_children(start.children))

@@ -36,7 +36,6 @@ class Function(Node):
             block.append_line('var')
             block.indent()
             for d in declarations:
-                print('declaration')
                 name = d.children[1].string
                 added_declarations = 0
                 if name not in declared_names:
@@ -47,8 +46,6 @@ class Function(Node):
                     if not isinstance(d.children[3], Expression):
                         for i in range(3, len(d.children), 2):
                             name = d.children[i].string
-                            print(name)
-                            print(declared_names)
                             if name not in declared_names:
                                 if added_declarations == 0:
                                     block.append_line(name)
@@ -63,12 +60,6 @@ class Function(Node):
 
         block.append_line('begin')
         block.indent()
-        # for d in declarations:
-        #     print(d.string)
-        #     if len(d.children) == 4:
-        #         block.append_line(d.children[1].string + ' := ')
-        #         d.children[3].write(int_state, block)
-        #         block.append(';')
         self.children[len(self.children) - 1].write(int_state, block)
         block.unindent()
         block.append_line('end;\n')
