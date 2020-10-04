@@ -1,5 +1,5 @@
-from src.grammar import *
-from src.syntax_tree import *
+from src.grammar.nodes import *
+from src.transpiler.syntax_tree import *
 
 
 class TextBlock:
@@ -56,9 +56,9 @@ class IntermediateState:
         global_variables = []
         functions = []
         for node in self.syntax_tree.get_top_level():
-            if isinstance(node, constant.Constant):
+            if isinstance(node, declaration.Constant):
                 constants.append(node)
-            elif isinstance(node, global_variable.GlobalVariable):
+            elif isinstance(node, declaration.GlobalVariable):
                 global_variables.append(node)
             elif isinstance(node, function.Function):
                 functions.append(node)

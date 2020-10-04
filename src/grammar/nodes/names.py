@@ -1,4 +1,4 @@
-from src.syntax_tree import *
+from src.transpiler.syntax_tree import *
 
 
 class VariableName(Node):

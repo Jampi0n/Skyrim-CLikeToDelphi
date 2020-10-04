@@ -1,6 +1,6 @@
-from src.syntax_tree import *
-from src.grammar.declaration import Declaration
-from src.grammar.expression import Expression
+from src.transpiler.syntax_tree import *
+from src.grammar.nodes.declaration import Declaration
+from src.grammar.nodes.expression import Expression
 
 
 def search_declarations(node):

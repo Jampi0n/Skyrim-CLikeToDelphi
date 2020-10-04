@@ -1,13 +1,12 @@
-from src.syntax_tree import *
-from src.grammar.comment import Comment
-from src.grammar.declaration import Declaration
-from src.grammar.expression import Expression
+from src.transpiler.syntax_tree import *
+from src.grammar.nodes.declaration import Declaration
+from src.grammar.nodes.expression import Expression
 
 
 class Statement(Node):
     def write(self, int_state, block=None):
-        if isinstance(self.children[0], Declaration):
-            declaration = self.children[0]
+        declaration = self.children[0]
+        if isinstance(declaration, Declaration):
             declaration.write(int_state, block)
             if declaration.is_init():
                 self.children[1].write(int_state, block)
@@ -58,7 +57,7 @@ Node.node_map['ASSIGNMENT'] = Assignment
 class StatementBlock(Node):
     def write(self, int_state, block=None):
         for c in self.children:
-            if isinstance(c, Statement) or isinstance(c, Comment):
+            if isinstance(c, Statement):
                 c.write(int_state, block)
 
 

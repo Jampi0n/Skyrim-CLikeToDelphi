@@ -9,25 +9,32 @@ opt = Optional
 
 
 class CLike(Grammar):
+    # refs
+    EXPRESSION = Ref()
+    STATEMENT = Ref()
+    STATEMENT_BLOCK = Ref()
+
+    # names
     VARIABLE_NAME = Regex(WORD)
     TYPE = Regex(WORD)
+    FUNCTION_NAME = Regex(WORD)
+
+    # literals
     STRING_LITERAL = Regex(STRING)
     NUMBER_LITERAL = Regex(NUMBER)
     LITERAL = Choice(STRING_LITERAL, NUMBER_LITERAL)
-    EXPRESSION = Ref()
-    STATEMENT = Ref()
-    STATEMENT_BLOCK = seq('{', Repeat(STATEMENT), '}')
+
+    # declaration
     DECLARATION = seq(TYPE, VARIABLE_NAME, opt(Choice(seq('=', EXPRESSION), Repeat(seq(',', VARIABLE_NAME)))))
     GLOBAL = seq(DECLARATION, ';')
     CONSTANT = seq(Keyword('const'), opt(TYPE), VARIABLE_NAME, '=', LITERAL, ';')
 
-    # PREFIX = Repeat(seq(EXPRESSION, '.'))
-
+    # function
     PARAMETER = seq(TYPE, VARIABLE_NAME)
     PARAMETER_LIST = opt(seq(Repeat(seq(PARAMETER, ',')), PARAMETER))
-
-    FUNCTION_NAME = Regex(WORD)
     FUNCTION = seq(TYPE, FUNCTION_NAME, '(', PARAMETER_LIST, ')', STATEMENT_BLOCK)
+
+    # expression
     EXPRESSION = Prio(
         LITERAL,
         VARIABLE_NAME,
@@ -53,6 +60,7 @@ class CLike(Grammar):
         seq(THIS, '||', THIS),
     )
 
+    # statement
     ASSIGNMENT_OP = Tokens('= += -= *= /=')
     ASSIGNMENT = seq(EXPRESSION, ASSIGNMENT_OP, EXPRESSION)
 
@@ -66,17 +74,18 @@ class CLike(Grammar):
     FINALLY = seq(Keyword('finally'), Choice(STATEMENT_BLOCK, STATEMENT))
     TRY = seq(Keyword('try'), Choice(STATEMENT_BLOCK, STATEMENT), opt(CATCH), opt(FINALLY))
 
-    EXPRESSION_STATEMENT = seq(EXPRESSION, ';')
-
+    RETURN = seq(Keyword('return'), Optional(EXPRESSION), ';')
     THROW = seq(Keyword('throw'), EXPRESSION, ';')
-
     CONTINUE = seq(Keyword('continue'), ';')
     BREAK = seq(Keyword('break'), ';')
-    RETURN = seq(Keyword('return'), Optional(EXPRESSION), ';')
+
+    EXPRESSION_STATEMENT = seq(EXPRESSION, ';')
 
     STATEMENT = Choice(RETURN, THROW, seq(ASSIGNMENT, ';'), seq(DECLARATION, ';'), IF, WHILE, FOR,
                        TRY, CONTINUE, BREAK, EXPRESSION_STATEMENT)
 
-    PROGRAM_PART = Choice(CONSTANT, GLOBAL, FUNCTION)
+    STATEMENT_BLOCK = seq('{', Repeat(STATEMENT), '}')
 
+    # start
+    PROGRAM_PART = Choice(CONSTANT, GLOBAL, FUNCTION)
     START = Repeat(PROGRAM_PART)

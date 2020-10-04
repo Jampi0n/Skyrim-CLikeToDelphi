@@ -1,4 +1,4 @@
-from src.syntax_tree import *
+from src.transpiler.syntax_tree import *
 
 
 class ProgramPart(Node):
@@ -10,3 +10,11 @@ class ProgramPart(Node):
 
 
 Node.node_map['PROGRAM_PART'] = ProgramPart
+
+
+class Start(Node):
+    def write(self, int_state, block=None):
+        assert False
+
+
+Node.node_map['START'] = Start

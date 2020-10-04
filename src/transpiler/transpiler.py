@@ -1,7 +1,7 @@
 from src.grammar.grammar import CLike
-from src.syntax_tree import SyntaxTree
-from src.intermediate_state import IntermediateState
-from src.pre_process import PreProcess
+from src.transpiler.syntax_tree import SyntaxTree
+from src.transpiler.intermediate_state import IntermediateState
+from src.transpiler.pre_process import PreProcess
 
 
 def transpile_string(in_string):

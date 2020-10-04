@@ -1,7 +1,6 @@
 from pyleri import Grammar
 from graphviz import Digraph
 from typing import *
-# from src.intermediate_state import IntermediateState
 import json
 
 
