@@ -1,6 +1,7 @@
 from src.syntax_tree import *
 from src.grammar.comment import Comment
 from src.grammar.declaration import Declaration
+from src.grammar.expression import Expression
 
 
 class Statement(Node):
@@ -207,3 +208,34 @@ class Throw(Node):
 
 
 Node.node_map['THROW'] = Throw
+
+
+class Return(Node):
+
+    def write(self, int_state, block=None):
+        expr = self.children[1]
+        if isinstance(expr, Expression):
+            block.append_line('Result := ')
+            expr.write(int_state, block)
+            block.append(';')
+
+        block.append_line('exit;')
+
+
+Node.node_map['RETURN'] = Return
+
+
+class Continue(Leaf):
+    def write(self, int_state, block=None):
+        block.append_line('continue;')
+
+
+Node.node_map['CONTINUE'] = Continue
+
+
+class Break(Leaf):
+    def write(self, int_state, block=None):
+        block.append_line('break;')
+
+
+Node.node_map['BREAK'] = Break

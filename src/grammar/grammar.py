@@ -72,9 +72,10 @@ class CLike(Grammar):
 
     CONTINUE = seq(Keyword('continue'), ';')
     BREAK = seq(Keyword('break'), ';')
+    RETURN = seq(Keyword('return'), Optional(EXPRESSION), ';')
 
-    STATEMENT = Choice(THROW, EXPRESSION_STATEMENT, seq(ASSIGNMENT, ';'), seq(DECLARATION, ';'), IF, WHILE, FOR, TRY,
-                       CONTINUE, BREAK)
+    STATEMENT = Choice(RETURN, THROW, seq(ASSIGNMENT, ';'), seq(DECLARATION, ';'), IF, WHILE, FOR,
+                       TRY, CONTINUE, BREAK, EXPRESSION_STATEMENT)
 
     PROGRAM_PART = Choice(CONSTANT, GLOBAL, FUNCTION)
 
