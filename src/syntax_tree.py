@@ -137,9 +137,9 @@ class SyntaxTree:
 
         self.root = parse_tree(start, None, None)
 
-        print(self.root)
-        print(json.dumps(view_parse_tree(result), indent=2))
-        self.draw()
+        # print(self.root)
+        # print(json.dumps(view_parse_tree(result), indent=2))
+        # self.draw()
 
     def draw(self):
         graph = Digraph(comment='syntax tree')
