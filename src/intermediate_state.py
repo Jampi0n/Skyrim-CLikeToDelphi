@@ -46,6 +46,9 @@ class IntermediateState:
         self.functions = TextBlock()
         self.init = TextBlock(1)
 
+        self.has_init = False
+        self.has_finalize = False
+        self.has_process = False
         self.top_level()
 
     def top_level(self):
@@ -59,6 +62,13 @@ class IntermediateState:
                 global_variables.append(node)
             elif isinstance(node, function.Function):
                 functions.append(node)
+                name = node.children[1].string
+                if name == '__initialize__':
+                    self.has_init = True
+                elif name == '__finalize__':
+                    self.has_finalize = True
+                elif name == '__process__':
+                    self.has_process = True
 
         for const in constants:
             const.write(self)
@@ -73,8 +83,49 @@ class IntermediateState:
         pass
 
     def write_program(self):
-        return self.constants.write_program() + '\n\n' + self.globals.write_program() + '\n\n' + \
-               self.functions.write_program() + '\n\n' + self.init.write_program()
+        result = 'unit transpiled;'
+        if len(self.constants.lines) > 0:
+            result += '\n\nconst\n'
+            result += self.constants.write_program()
+
+        if len(self.globals.lines) > 0:
+            result += '\n\nvar\n'
+            result += self.globals.write_program()
+
+        if len(self.functions.lines) > 0:
+            result += '\n\n// Functions\n\n'
+            result += self.functions.write_program()
+
+        if len(self.init.lines) > 0:
+            result += '\n\n// InitGlobals\n'
+            result += 'procedure __init_globals__();\nbegin\n'
+            result += self.init.write_program()
+            result += '\nend;'
+
+        if self.has_process:
+            result += '\n\n'
+            result += 'function Process(e: IInterface): Integer;\nbegin\n'
+            result += '    ' + '__process__(e);\n'
+            result += 'end;\n'
+
+        if len(self.init.lines) > 0 or self.has_init:
+            result += '\n\n'
+            result += 'function Initialize: Integer;\nbegin\n'
+            if len(self.init.lines) > 0:
+                result += '    ' + '__init_globals__();\n'
+            if self.has_init:
+                result += '    ' + '__initialize__();\n'
+            result += 'end;\n'
+
+        if self.has_finalize:
+            result += '\n\n'
+            result += 'function Finalize(): Integer;\nbegin\n'
+            result += '    ' + '__finalize__();\n'
+            result += 'end;\n'
+
+        result += '\n\nend.'
+
+        return result
 
     # def append_line(self, line):
     #     TextBlock.current.append_line(line)

@@ -88,3 +88,58 @@ class For(Node):
 
 
 Node.node_map['FOR'] = For
+
+
+class If(Node):
+
+    def __init__(self, parent, start, end, name, element, string):
+        super().__init__(parent, start, end, name, element, string)
+
+    def write(self, int_state, block=None):
+        block.append_line('if ')
+        self.children[2].write(int_state, block)
+        block.append(' then begin')
+        block.indent()
+        self.children[4].write(int_state, block)
+        block.unindent()
+        if len(self.children) < 6:
+            block.append_line('end;')
+        else:
+            self.children[5].write(int_state, block)
+
+
+Node.node_map['IF'] = If
+
+
+class Else(Node):
+
+    def __init__(self, parent, start, end, name, element, string):
+        super().__init__(parent, start, end, name, element, string)
+
+    def write(self, int_state, block=None):
+        block.append_line('end else begin ')
+        block.indent()
+        self.children[1].write(int_state, block)
+        block.unindent()
+        block.append_line('end;')
+
+
+Node.node_map['ELSE'] = Else
+
+
+class While(Node):
+
+    def __init__(self, parent, start, end, name, element, string):
+        super().__init__(parent, start, end, name, element, string)
+
+    def write(self, int_state, block=None):
+        block.append_line('while ')
+        self.children[2].write(int_state, block)
+        block.append(' do begin')
+        block.indent()
+        self.children[4].write(int_state, block)
+        block.unindent()
+        block.append_line('end;')
+
+
+Node.node_map['WHILE'] = While

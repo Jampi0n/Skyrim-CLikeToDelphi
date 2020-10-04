@@ -29,13 +29,17 @@ class Function(Node):
 
         block.append(';')
 
-        declarations = search_declarations(self.children[5])
+        declarations = search_declarations(self.children[len(self.children) - 1])
+        declared_names = []
         if len(declarations) > 0:
             block.append_line('var')
             block.indent()
             for d in declarations:
                 assert len(d.children) == 4 or len(d.children) == 2
-                block.append_line(d.children[1].string + ' : ' + d.children[0].string + ';')
+                name = d.children[1].string
+                if name not in declared_names:
+                    block.append_line(name + ' : ' + d.children[0].string + ';')
+                    declared_names.append(name)
             block.unindent()
 
         block.append_line('begin')
@@ -46,9 +50,9 @@ class Function(Node):
         #         block.append_line(d.children[1].string + ' := ')
         #         d.children[3].write(int_state, block)
         #         block.append(';')
-        self.children[5].write(int_state, block)
+        self.children[len(self.children) - 1].write(int_state, block)
         block.unindent()
-        block.append_line('end;')
+        block.append_line('end;\n')
 
 
 Node.node_map['FUNCTION'] = Function

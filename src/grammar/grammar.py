@@ -15,7 +15,7 @@ class CLike(Grammar):
     NUMBER_LITERAL = Regex(NUMBER)
     LITERAL = Choice(STRING_LITERAL, NUMBER_LITERAL)
     EXPRESSION = Ref()
-    COMMENT = Regex('//.*\\n')
+    COMMENT = Regex('//.*')
     STATEMENT = Ref()
     STATEMENT_BLOCK = seq('{', Repeat(Choice(STATEMENT, COMMENT)), '}')
     DECLARATION = seq(TYPE, VARIABLE_NAME, opt(seq('=', EXPRESSION)))
@@ -59,7 +59,7 @@ class CLike(Grammar):
     ASSIGNMENT = seq(VARIABLE_NAME, ASSIGNMENT_OP, EXPRESSION)
 
     ELSE = seq(Keyword('else'), Choice(STATEMENT_BLOCK, STATEMENT))
-    IF = seq(Keyword('if'), EXPRESSION, Choice(STATEMENT_BLOCK, STATEMENT), opt(ELSE))
+    IF = seq(Keyword('if'), '(', EXPRESSION, ')', Choice(STATEMENT_BLOCK, STATEMENT), opt(ELSE))
     WHILE = seq(Keyword('while'), '(', EXPRESSION, ')', Choice(STATEMENT_BLOCK, STATEMENT))
     FOR = seq(Keyword('for'), '(', Choice(DECLARATION, ASSIGNMENT), ';', EXPRESSION, ';', ASSIGNMENT, ')',
               Choice(STATEMENT_BLOCK, STATEMENT))
