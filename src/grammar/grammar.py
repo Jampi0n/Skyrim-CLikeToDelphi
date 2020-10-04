@@ -62,9 +62,18 @@ class CLike(Grammar):
     FOR = seq(Keyword('for'), '(', Choice(DECLARATION, ASSIGNMENT), ';', EXPRESSION, ';', ASSIGNMENT, ')',
               Choice(STATEMENT_BLOCK, STATEMENT))
 
+    CATCH = seq(Keyword('catch'), '(', PARAMETER, ')', Choice(STATEMENT_BLOCK, STATEMENT))
+    TRY = seq(Keyword('try'), Choice(STATEMENT_BLOCK, STATEMENT), opt(CATCH))
+
     EXPRESSION_STATEMENT = seq(EXPRESSION, ';')
 
-    STATEMENT = Choice(EXPRESSION_STATEMENT, seq(ASSIGNMENT, ';'), seq(DECLARATION, ';'), IF, WHILE, FOR)
+    THROW = seq(Keyword('throw'), EXPRESSION, ';')
+
+    CONTINUE = seq(Keyword('continue'), ';')
+    BREAK = seq(Keyword('break'), ';')
+
+    STATEMENT = Choice(THROW, EXPRESSION_STATEMENT, seq(ASSIGNMENT, ';'), seq(DECLARATION, ';'), IF, WHILE, FOR, TRY,
+                       CONTINUE, BREAK)
 
     PROGRAM_PART = Choice(CONSTANT, GLOBAL, FUNCTION)
 

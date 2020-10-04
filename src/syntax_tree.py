@@ -91,7 +91,7 @@ class SyntaxTree:
     def __init__(self, grammar: Grammar, string):
         result = grammar.parse(string)
         if not result.is_valid:
-            assert False, result.as_str() + '>' + string
+            assert False, result.as_str() + '\n' + string[result.pos - 30:result.pos + 30]
 
         start = result.tree.children[0] if result.tree.children else result.tree
 
@@ -140,7 +140,7 @@ class SyntaxTree:
 
         # print(self.root)
         # print(json.dumps(view_parse_tree(result), indent=2))
-        self.draw()
+        # self.draw()
 
     def draw(self):
         graph = Digraph(comment='syntax tree')

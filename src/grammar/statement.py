@@ -143,3 +143,48 @@ class While(Node):
 
 
 Node.node_map['WHILE'] = While
+
+
+class Try(Node):
+    def write(self, int_state, block=None):
+        block.append_line('try ')
+        block.indent()
+        self.children[1].write(int_state, block)
+        block.unindent()
+        if len(self.children) < 3:
+            block.append_line('end;')
+        else:
+            self.children[2].write(int_state, block)
+
+
+Node.node_map['TRY'] = Try
+
+
+class Catch(Node):
+    def write(self, int_state, block=None):
+        block.append_line('except')
+        block.indent()
+        block.append_line('on ')
+        parameter = self.children[2]
+        parameter.is_last = True
+        parameter.write(int_state, block)
+        block.append(' do begin')
+        block.indent()
+        self.children[4].write(int_state, block)
+        block.unindent()
+        block.append_line('end;')
+        block.unindent()
+        block.append_line('end;')
+
+
+Node.node_map['CATCH'] = Catch
+
+
+class Throw(Node):
+    def write(self, int_state, block=None):
+        block.append_line('raise ')
+        self.children[1].write(int_state, block)
+        block.append(';')
+
+
+Node.node_map['THROW'] = Throw

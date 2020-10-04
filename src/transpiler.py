@@ -8,6 +8,10 @@ def transpile_string(in_string):
     grammar = CLike()
     pre_process = PreProcess(in_string)
     header, in_string = pre_process.pre_process()
+
+    tmp_file = open('out/in.cs', 'w')
+    tmp_file.write(in_string)
+
     syntax_tree = SyntaxTree(grammar, in_string)
     intermediate_state = IntermediateState(syntax_tree)
     return header + intermediate_state.write_program()
