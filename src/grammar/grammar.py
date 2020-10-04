@@ -15,17 +15,19 @@ class CLike(Grammar):
     NUMBER_LITERAL = Regex(NUMBER)
     LITERAL = Choice(STRING_LITERAL, NUMBER_LITERAL)
     EXPRESSION = Ref()
-    COMMENT = Regex('//.*')
+
+    COMMENT = Regex('//.*|/\\*[^*]*\\*+(?:[^/*][^*]*\\*+)*/')
     STATEMENT = Ref()
     STATEMENT_BLOCK = seq('{', Repeat(Choice(STATEMENT, COMMENT)), '}')
     DECLARATION = seq(TYPE, VARIABLE_NAME, opt(Choice(seq('=', EXPRESSION), Repeat(seq(',', VARIABLE_NAME)))))
     GLOBAL = seq(DECLARATION, ';')
-    CONSTANT = seq(Keyword('const'), VARIABLE_NAME, '=', LITERAL, ';')
+    CONSTANT = seq(Keyword('const'), opt(TYPE), VARIABLE_NAME, '=', LITERAL, ';')
 
     # PREFIX = Repeat(seq(EXPRESSION, '.'))
 
     PARAMETER = seq(TYPE, VARIABLE_NAME)
     PARAMETER_LIST = opt(seq(Repeat(seq(PARAMETER, ',')), PARAMETER))
+
     FUNCTION_NAME = Regex(WORD)
     FUNCTION = seq(TYPE, FUNCTION_NAME, '(', PARAMETER_LIST, ')', STATEMENT_BLOCK)
     EXPRESSION = Prio(
