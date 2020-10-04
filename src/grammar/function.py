@@ -80,7 +80,8 @@ class ParameterList(Node):
         last_parameter = self.children[len(self.children) - 1]
         last_parameter.is_last = True
         for c in self.children:
-            c.write(int_state, block)
+            if isinstance(c, Parameter):
+                c.write(int_state, block)
 
 
 Node.node_map['PARAMETER_LIST'] = ParameterList
@@ -95,7 +96,7 @@ class Parameter(Node):
     def write(self, int_state, block=None):
         block.append(self.children[1].string + ' : ' + self.children[0].translated())
         if not self.is_last:
-            block.append(';')
+            block.append('; ')
 
 
 Node.node_map['PARAMETER'] = Parameter

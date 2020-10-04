@@ -21,6 +21,7 @@ class Type(Node):
             'int': 'Integer',
             'float': 'Real',
             'string': 'String',
+            'bool': 'Boolean',
         }
         string = self.string
         if string in type_translation:

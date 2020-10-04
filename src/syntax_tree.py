@@ -64,10 +64,10 @@ class Node:
     def write(self, int_state, block):
         token_translation = {
             '!': ' Not ',
-            '!=': '<>',
+            '!=': ' <> ',
             '&&': ' And ',
             '||': ' Or ',
-            '%': 'mod',
+            '%': ' mod ',
             '+': ' + ',
             '-': ' - ',
             '*': ' * ',
