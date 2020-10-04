@@ -1,5 +1,6 @@
 from src.syntax_tree import *
 from src.grammar.declaration import Declaration
+from src.grammar.expression import Expression
 
 
 def search_declarations(node):
@@ -23,9 +24,13 @@ class Function(Node):
         void = self.children[0].string == 'void'
         block.append_line(('procedure ' if void else 'function ') + self.children[1].string + '(')
 
+        parameter_list = self.children[3]
+        if isinstance(parameter_list, ParameterList):
+            parameter_list.write(int_state, block)
+
         block.append(')')
         if not void:
-            block.append(' : ' + self.children[0].string)
+            block.append(' : ' + self.children[0].translated())
 
         block.append(';')
 
@@ -35,11 +40,19 @@ class Function(Node):
             block.append_line('var')
             block.indent()
             for d in declarations:
-                assert len(d.children) == 4 or len(d.children) == 2
                 name = d.children[1].string
                 if name not in declared_names:
-                    block.append_line(name + ' : ' + d.children[0].string + ';')
+                    block.append_line(d.children[1].string)
                     declared_names.append(name)
+                if len(d.children) >= 4:
+                    if not isinstance(d.children[3], Expression):
+                        for i in range(3, len(d.children), 2):
+                            name = d.children[i].string
+                            if name not in declared_names:
+                                block.append(', ' + name)
+                                declared_names.append(name)
+
+                block.append(' : ' + d.children[0].translated() + ';')
             block.unindent()
 
         block.append_line('begin')
@@ -64,7 +77,10 @@ class ParameterList(Node):
         super().__init__(parent, start, end, name, element, string)
 
     def write(self, int_state, block=None):
-        assert False
+        last_parameter = self.children[len(self.children) - 1]
+        last_parameter.is_last = True
+        for c in self.children:
+            c.write(int_state, block)
 
 
 Node.node_map['PARAMETER_LIST'] = ParameterList
@@ -74,9 +90,12 @@ class Parameter(Node):
 
     def __init__(self, parent, start, end, name, element, string):
         super().__init__(parent, start, end, name, element, string)
+        self.is_last = False
 
     def write(self, int_state, block=None):
-        assert False
+        block.append(self.children[1].string + ' : ' + self.children[0].translated())
+        if not self.is_last:
+            block.append(';')
 
 
 Node.node_map['PARAMETER'] = Parameter

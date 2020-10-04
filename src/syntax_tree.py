@@ -58,6 +58,9 @@ class Node:
         for c in self.children:
             c.draw(graph, self)
 
+    def translated(self):
+        return self.string
+
     def write(self, int_state, block):
         token_translation = {
             '!': ' Not ',
@@ -71,8 +74,9 @@ class Node:
             '/': ' / ',
             '<': ' < ',
             '>': ' > ',
+            '==': ' = '
         }
-        string = self.string
+        string = self.translated()
         if string in token_translation:
             string = token_translation[string]
         block.append(string)

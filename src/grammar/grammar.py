@@ -18,7 +18,7 @@ class CLike(Grammar):
     COMMENT = Regex('//.*')
     STATEMENT = Ref()
     STATEMENT_BLOCK = seq('{', Repeat(Choice(STATEMENT, COMMENT)), '}')
-    DECLARATION = seq(TYPE, VARIABLE_NAME, opt(seq('=', EXPRESSION)))
+    DECLARATION = seq(TYPE, VARIABLE_NAME, opt(Choice(seq('=', EXPRESSION), Repeat(seq(',', VARIABLE_NAME)))))
     GLOBAL = seq(DECLARATION, ';')
     CONSTANT = seq(Keyword('const'), VARIABLE_NAME, '=', LITERAL, ';')
 
@@ -28,14 +28,13 @@ class CLike(Grammar):
     PARAMETER_LIST = opt(seq(Repeat(seq(PARAMETER, ',')), PARAMETER))
     FUNCTION_NAME = Regex(WORD)
     FUNCTION = seq(TYPE, FUNCTION_NAME, '(', PARAMETER_LIST, ')', STATEMENT_BLOCK)
-
     EXPRESSION = Prio(
         LITERAL,
         VARIABLE_NAME,
-
         seq('!', THIS),
         seq('-', THIS),
 
+        seq(THIS, '[', THIS, ']'),
         seq(THIS, '(', opt(seq(Repeat(seq(THIS, ',')), THIS)), ')'),  # Repeat(seq(THIS, '.')),
         seq('(', THIS, ')'),
         seq(THIS, '.', THIS),
@@ -52,11 +51,10 @@ class CLike(Grammar):
         seq(THIS, '!=', THIS),
         seq(THIS, '&&', THIS),
         seq(THIS, '||', THIS),
-
     )
 
     ASSIGNMENT_OP = Tokens('= += -= *= /=')
-    ASSIGNMENT = seq(VARIABLE_NAME, ASSIGNMENT_OP, EXPRESSION)
+    ASSIGNMENT = seq(EXPRESSION, ASSIGNMENT_OP, EXPRESSION)
 
     ELSE = seq(Keyword('else'), Choice(STATEMENT_BLOCK, STATEMENT))
     IF = seq(Keyword('if'), '(', EXPRESSION, ')', Choice(STATEMENT_BLOCK, STATEMENT), opt(ELSE))

@@ -1,4 +1,5 @@
 from src.syntax_tree import *
+from src.grammar.expression import Expression
 
 
 class Declaration(Node):
@@ -8,8 +9,9 @@ class Declaration(Node):
 
     def write(self, int_state, block=None):
         if len(self.children) == 4:
-            block.append_line(self.children[1].string + ' := ')
-            self.children[3].write(int_state, block)
+            if isinstance(self.children[3], Expression):
+                block.append_line(self.children[1].string + ' := ')
+                self.children[3].write(int_state, block)
 
 
 Node.node_map['DECLARATION'] = Declaration
