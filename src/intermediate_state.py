@@ -83,7 +83,7 @@ class IntermediateState:
         pass
 
     def write_program(self):
-        result = 'unit transpiled;'
+        result = ''
         if len(self.constants.lines) > 0:
             result += '\n\nconst\n'
             result += self.constants.write_program()

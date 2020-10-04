@@ -15,10 +15,8 @@ class CLike(Grammar):
     NUMBER_LITERAL = Regex(NUMBER)
     LITERAL = Choice(STRING_LITERAL, NUMBER_LITERAL)
     EXPRESSION = Ref()
-
-    COMMENT = Regex('//.*|/\\*[^*]*\\*+(?:[^/*][^*]*\\*+)*/')
     STATEMENT = Ref()
-    STATEMENT_BLOCK = seq('{', Repeat(Choice(STATEMENT, COMMENT)), '}')
+    STATEMENT_BLOCK = seq('{', Repeat(STATEMENT), '}')
     DECLARATION = seq(TYPE, VARIABLE_NAME, opt(Choice(seq('=', EXPRESSION), Repeat(seq(',', VARIABLE_NAME)))))
     GLOBAL = seq(DECLARATION, ';')
     CONSTANT = seq(Keyword('const'), opt(TYPE), VARIABLE_NAME, '=', LITERAL, ';')
@@ -68,6 +66,6 @@ class CLike(Grammar):
 
     STATEMENT = Choice(EXPRESSION_STATEMENT, seq(ASSIGNMENT, ';'), seq(DECLARATION, ';'), IF, WHILE, FOR)
 
-    PROGRAM_PART = Choice(CONSTANT, GLOBAL, FUNCTION, COMMENT)
+    PROGRAM_PART = Choice(CONSTANT, GLOBAL, FUNCTION)
 
     START = Repeat(PROGRAM_PART)

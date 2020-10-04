@@ -90,7 +90,8 @@ class Leaf(Node):
 class SyntaxTree:
     def __init__(self, grammar: Grammar, string):
         result = grammar.parse(string)
-        assert result.is_valid, result.as_str()
+        if not result.is_valid:
+            assert False, result.as_str() + '>' + string
 
         start = result.tree.children[0] if result.tree.children else result.tree
 

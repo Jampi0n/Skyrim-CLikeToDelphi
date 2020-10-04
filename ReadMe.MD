@@ -17,6 +17,30 @@ The target language is limited and these limitations also affect the source lang
 * All local variables have the entire functions as scope.
 * The for statement is very basic. If complex logic is required, manually write it with while.
 
+## Header
+
+The script must start with the header.
+
+### Description
+
+The first part is a multi line comment which will be used as description.
+The content between `'/*'` and `'*/'` will be used as description.
+
+### Unit
+
+The next part is a single line comment starting with `// unit `, which specifies the unit.
+
+### Example
+
+This is an example of a correct header:
+```
+/*
+    This is am example script.
+*/
+
+// unit example_script
+```
+
 ## Special functions
 
 * \_\_initialize__()
