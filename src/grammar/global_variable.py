@@ -3,10 +3,6 @@ from src.grammar.expression import Expression
 
 
 class GlobalVariable(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def write(self, int_state, block=None):
         declaration = self.children[0]
         int_state.globals.append_line(declaration.children[1].string)

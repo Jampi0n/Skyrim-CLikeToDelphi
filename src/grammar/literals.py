@@ -32,10 +32,6 @@ def translate_string(string):
 
 
 class Literal(Leaf):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def translated(self):
         if self.string[0] == '"':
             return '\'' + translate_string(self.string[1:-1]) + '\''

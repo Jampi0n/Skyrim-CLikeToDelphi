@@ -5,10 +5,6 @@ from src.grammar.expression import Expression
 
 
 class Statement(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def write(self, int_state, block=None):
         if isinstance(self.children[0], Declaration):
             declaration = self.children[0]
@@ -44,10 +40,6 @@ Node.node_map['ASSIGNMENT_OP'] = AssignmentOp
 
 
 class Assignment(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def write(self, int_state, block=None):
         block.append_line('')
         self.children[0].write(int_state, block)
@@ -64,10 +56,6 @@ Node.node_map['ASSIGNMENT'] = Assignment
 
 
 class StatementBlock(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def write(self, int_state, block=None):
         for c in self.children:
             if isinstance(c, Statement) or isinstance(c, Comment):
@@ -78,10 +66,6 @@ Node.node_map['STATEMENT_BLOCK'] = StatementBlock
 
 
 class For(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def write(self, int_state, block=None):
         self.children[2].write(int_state, block)
         block.append(';')
@@ -100,10 +84,6 @@ Node.node_map['FOR'] = For
 
 
 class If(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def write(self, int_state, block=None):
         block.append_line('if ')
         self.children[2].write(int_state, block)
@@ -121,10 +101,6 @@ Node.node_map['IF'] = If
 
 
 class Else(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def write(self, int_state, block=None):
         block.append_line('end else begin ')
         block.indent()
@@ -137,10 +113,6 @@ Node.node_map['ELSE'] = Else
 
 
 class While(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def write(self, int_state, block=None):
         block.append_line('while ')
         self.children[2].write(int_state, block)

@@ -15,10 +15,6 @@ def search_declarations(node):
 
 
 class Function(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def write(self, int_state, block=None):
         block = int_state.functions
         void = self.children[0].string == 'void'
@@ -82,10 +78,6 @@ Node.node_map['FUNCTION'] = Function
 
 
 class ParameterList(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def write(self, int_state, block=None):
         last_parameter = self.children[len(self.children) - 1]
         last_parameter.is_last = True
@@ -110,15 +102,3 @@ class Parameter(Node):
 
 
 Node.node_map['PARAMETER'] = Parameter
-
-
-class FunctionBody(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
-    def write(self, int_state, block=None):
-        assert False
-
-
-Node.node_map['FUNCTION_BODY'] = FunctionBody

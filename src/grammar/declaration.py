@@ -3,10 +3,6 @@ from src.grammar.expression import Expression
 
 
 class Declaration(Node):
-
-    def __init__(self, parent, start, end, name, element, string):
-        super().__init__(parent, start, end, name, element, string)
-
     def is_init(self):
         if len(self.children) == 4:
             return isinstance(self.children[3], Expression)
