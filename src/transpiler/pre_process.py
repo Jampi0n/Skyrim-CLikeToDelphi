@@ -75,7 +75,14 @@ def pre_process(in_path):
     for i in imports:
         import_string += resolve_import(i.strip()[10:], in_path.parent)
 
+    use_string = ''
+    uses = re.findall('\\n\\s*// uses .*', in_string)
+    for u in uses:
+        use_string += 'uses ' + u.strip()[8:] + ';\n'
+    if use_string != '':
+        use_string += '\n\n'
+
     in_string = remove_comments(import_string + '\n\n' + in_string)
 
-    header = '{' + description[2:-2] + '}\n\nunit ' + unit.strip()[8:] + ';\n\n'
+    header = '{' + description[2:-2] + '}\n\nunit ' + unit.strip()[8:] + ';\n\n' + use_string
     return header, in_string

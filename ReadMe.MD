@@ -21,14 +21,28 @@ The target language is limited and these limitations also affect the source lang
 
 The script must start with the header.
 
-### Description
+### Description (Required)
 
-The first part is a multi line comment which will be used as description.
-The content between `'/*'` and `'*/'` will be used as description.
+The first multi line comment will be used as description.
+The multi line comment is between `'/*'` and `'*/'`.
 
-### Unit
+### Unit (Required)
 
-The next part is a single line comment starting with `// unit `, which specifies the unit.
+A single line comment starting with `// unit name` specifies the delphi unit.
+
+### Uses (Optional)
+
+To import other delphi units, use `// uses name`.
+
+### Imports (Optional)
+
+Single line comments starting with `// import path` can be used to split your project into multiple files.
+Relative paths to the main file can be used:
+* `./` specifies the directory of the main file.
+* `../` specifies the parent directory of the main file.
+
+All paths that do not start with `./` or `../` are interpreted as absolute paths.
+This can be useful for shared imports.
 
 ### Example
 
@@ -39,6 +53,11 @@ This is an example of a correct header:
 */
 
 // unit example_script
+
+// uses delphi_unit
+
+// import ./src/example_import.cs
+
 ```
 
 ## Special functions
