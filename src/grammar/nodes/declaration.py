@@ -106,7 +106,8 @@ class Declaration(Node):
         if assignment_block is not None:
             for d in declarations:
                 d.write(None, assignment_block)
-                assignment_block.append(';')
+                if d.get_expr() is not None:
+                    assignment_block.append(';')
 
 
 Node.node_map['DECLARATION'] = Declaration

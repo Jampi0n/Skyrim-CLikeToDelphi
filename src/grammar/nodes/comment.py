@@ -48,12 +48,9 @@ class LineEnd(Node):
         string = self.string
         string = re.sub('/\\*', '{', string)
         string = re.sub('\\*/', '}', string)
-        return string
+        return string[:-1]
 
     def write(self, int_state, block=None):
-        print('>> LINE_END >>')
-        print(self.string)
-        print('<< LINE_END <<')
         block.append(self.translated())
 
 

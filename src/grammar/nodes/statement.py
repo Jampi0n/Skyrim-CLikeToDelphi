@@ -6,11 +6,6 @@ from src.grammar.nodes.comment import Cmt
 
 class Statement(Node):
     def write(self, int_state, block=None):
-
-        print('statement')
-        for c in self.children:
-            print(c.string)
-
         for c in self.children:
             if isinstance(c, Cmt):
                 block.append_line('')

@@ -144,7 +144,7 @@ class SyntaxTree:
                 if parent.name == 'EXPRESSION':
                     if node.element.__class__.__name__ == 'Optional':
                         is_grammar = True
-                        if node.children[0].element.name == 'COMMENT':
+                        if hasattr(node.children[0].element, 'name') and node.children[0].element.name == 'COMMENT':
                             name = 'CMT'
                         else:
                             name = 'ARGUMENT_LIST'
@@ -169,7 +169,7 @@ class SyntaxTree:
                 return None
 
         self.root = parse_tree(start, None, None)
-        print(json.dumps(view_parse_tree(result), indent=2))
+        # print(json.dumps(view_parse_tree(result), indent=2))
         self.draw()
 
     def draw(self):
