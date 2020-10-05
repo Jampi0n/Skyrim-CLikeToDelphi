@@ -117,7 +117,6 @@ class IntermediateState:
         # Functions.
         result += '\n\n// Functions\n\n'
         for i in range(len(self.syntax_tree_list)):
-            print(self.functions[i])
             result += self.functions[i].write_program() + '\n\n'
             if i != len(self.syntax_tree_list) - 1:
                 delphi = self.delphi_code_list.pop(0) + '\n\n'
