@@ -11,6 +11,11 @@ class ReadState(Enum):
 
 
 def remove_comments(code):
+    """
+    Removes comments from the string. Considers string literals.
+    :param code: string of code
+    :return: string of code without comments
+    """
     state = ReadState.NORMAL
     escape = False
     result = ''
@@ -70,6 +75,7 @@ def split(in_string):
     in_string_list = ['']
     delphi_string_list = []
 
+    # The first part is always a non-delphi part, even if it is just an empty string.
     delphi = False
 
     for line in in_string.splitlines(keepends=True):
@@ -87,6 +93,7 @@ def split(in_string):
             else:
                 delphi_string_list[len(delphi_string_list) - 1] += line
 
+    # The last part must be a non-delphi part. It can also be just a single empty line.
     assert not delphi
     in_string_list[len(in_string_list) - 1] = remove_comments(in_string_list[len(in_string_list) - 1])
 
@@ -95,11 +102,15 @@ def split(in_string):
 
 def pre_process(in_path):
     """
-    Extracts the header and removes all comments.
-    :return:
+    Extracts the header, splits source into delphi and non-delphi parts and removes comments from non-delphi parts.
+    There is one more non-delphi part than delphi part due to the sequence:
+    non-delphi, delphi, non-delphi, delphi, ..., non-delphi
+    :return: header string, list of non-delphi strings, list of delphi strings
     """
     in_string = open(in_path, 'r').read()
     multi_line = '/\\*[^*]*\\*+(?:[^/*][^*]*\\*+)*/'
+
+    # header
     description = re.search(multi_line, in_string).group(0)
     unit = re.search('\\n\\s*// unit .*', in_string).group(0)
     imports = re.findall('\\n\\s*// import .*', in_string)
@@ -114,7 +125,9 @@ def pre_process(in_path):
     if use_string != '':
         use_string += '\n\n'
 
+    header = '{' + description[2:-2] + '}\n\nunit ' + unit.strip()[8:] + ';\n\n' + use_string
+
+    # main part
     in_string_list, delphi_string_list = split(import_string + '\n\n' + in_string)
 
-    header = '{' + description[2:-2] + '}\n\nunit ' + unit.strip()[8:] + ';\n\n' + use_string
     return header, in_string_list, delphi_string_list
