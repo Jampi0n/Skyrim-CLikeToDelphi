@@ -117,38 +117,38 @@ class IntermediateState:
         # Functions.
         result += '\n\n// Functions\n\n'
         for i in range(len(self.syntax_tree_list)):
-            result += self.functions[i].write_program() + '\n\n'
+            result += self.functions[i].write_program() + '\n'
             if i != len(self.syntax_tree_list) - 1:
                 delphi = self.delphi_code_list.pop(0) + '\n\n'
                 result += delphi
 
         # Global variable initialization.
         if len(self.init.lines) > 0:
-            result += '\n\n// InitGlobals\n'
+            result += '// InitGlobals\n'
             result += 'procedure __init_globals__();\nbegin\n'
             result += self.init.write_program()
-            result += '\nend;'
+            result += '\nend;\n\n'
 
         # Special functions.
         if self.has_process:
-            result += '\n\n'
+            result += ''
             result += 'function Process(e: IInterface): Integer;\nbegin\n'
             result += '    ' + '__process__(e);\n'
-            result += 'end;\n'
+            result += 'end;\n\n'
         if len(self.init.lines) > 0 or self.has_init:
-            result += '\n\n'
+            result += ''
             result += 'function Initialize: Integer;\nbegin\n'
             if len(self.init.lines) > 0:
                 result += '    ' + '__init_globals__();\n'
             if self.has_init:
                 result += '    ' + '__initialize__();\n'
-            result += 'end;\n'
+            result += 'end;\n\n'
         if self.has_finalize:
-            result += '\n\n'
+            result += ''
             result += 'function Finalize(): Integer;\nbegin\n'
             result += '    ' + '__finalize__();\n'
-            result += 'end;\n'
+            result += 'end;\n\n'
 
-        result += '\n\nend'
+        result += 'end'
 
         return result

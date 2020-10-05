@@ -88,6 +88,7 @@ def split(in_string):
                 in_string_list[len(in_string_list) - 1] += line
         else:
             if line.startswith('// delphi end') or line.startswith('delphi end */'):
+                delphi_string_list[len(delphi_string_list) - 1] = delphi_string_list[len(delphi_string_list) - 1][:-1]
                 delphi = False
                 in_string_list.append('')
             else:
@@ -123,9 +124,9 @@ def pre_process(in_path):
     for u in uses:
         use_string += 'uses ' + u.strip()[8:] + ';\n'
     if use_string != '':
-        use_string += '\n\n'
+        use_string = '\n\n' + use_string
 
-    header = '{' + description[2:-2] + '}\n\nunit ' + unit.strip()[8:] + ';\n\n' + use_string
+    header = '{' + description[2:-2] + '}\n\nunit ' + unit.strip()[8:] + ';' + use_string
 
     # main part
     in_string_list, delphi_string_list = split(import_string + '\n\n' + in_string)
