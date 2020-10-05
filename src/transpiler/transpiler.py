@@ -1,23 +1,23 @@
 from src.grammar.grammar import CLike
 from src.transpiler.syntax_tree import SyntaxTree
 from src.transpiler.intermediate_state import IntermediateState
-from src.transpiler.pre_process import PreProcess
-
-
-def transpile_string(in_string):
-    grammar = CLike()
-    pre_process = PreProcess(in_string)
-    header, in_string = pre_process.pre_process()
-
-    tmp_file = open('out/in.cs', 'w')
-    tmp_file.write(in_string)
-
-    syntax_tree = SyntaxTree(grammar, in_string)
-    intermediate_state = IntermediateState(syntax_tree)
-    return header + intermediate_state.write_program()
+from src.transpiler.pre_process import pre_process
+from pathlib import Path
 
 
 def transpile_file(in_path, out_path):
-    in_file = open(in_path, 'r')
+    in_path = Path(in_path).absolute()
+    out_path = Path(out_path).absolute()
+    header, in_string = pre_process(in_path)
+
+    tmp_path = Path(out_path).absolute().parent.joinpath(Path('tmp.cs'))
+    tmp_file = open(tmp_path, 'w')
+    tmp_file.write(in_string)
+
+    grammar = CLike()
+
+    syntax_tree = SyntaxTree(grammar, in_string)
+    intermediate_state = IntermediateState(syntax_tree)
+    out_string = header + intermediate_state.write_program()
     out_file = open(out_path, 'w')
-    out_file.write(transpile_string(in_file.read()))
+    out_file.write(out_string)

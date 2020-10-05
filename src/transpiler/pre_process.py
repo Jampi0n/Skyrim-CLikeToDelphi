@@ -1,5 +1,6 @@
 import re
 from enum import Enum
+from pathlib import Path
 
 
 class ReadState(Enum):
@@ -52,20 +53,29 @@ def remove_comments(code):
     return result
 
 
-class PreProcess:
-    def __init__(self, in_string):
-        self.string = in_string
+def resolve_import(import_path: str, start_dir: Path):
+    import_path = import_path.strip()
+    # relative paths
+    if import_path[0:2] == './' or import_path[0:3] == '../':
+        import_path = start_dir.joinpath(Path(import_path))
+    return open(str(import_path), 'r').read() + '\n\n'
 
-    def pre_process(self):
-        """
-        Extracts the header and removes all comments.
-        :return:
-        """
-        multi_line = '/\\*[^*]*\\*+(?:[^/*][^*]*\\*+)*/'
-        description = re.search(multi_line, self.string).group(0)
-        unit = re.search('\\n\\s*// unit .*', self.string).group(0)
 
-        self.string = remove_comments(self.string)
+def pre_process(in_path):
+    """
+    Extracts the header and removes all comments.
+    :return:
+    """
+    in_string = open(in_path, 'r').read()
+    multi_line = '/\\*[^*]*\\*+(?:[^/*][^*]*\\*+)*/'
+    description = re.search(multi_line, in_string).group(0)
+    unit = re.search('\\n\\s*// unit .*', in_string).group(0)
+    imports = re.findall('\\n\\s*// import .*', in_string)
+    import_string = ''
+    for i in imports:
+        import_string += resolve_import(i.strip()[10:], in_path.parent)
 
-        header = '{' + description[2:-2] + '}\n\n' + unit[5:] + ';\n\n'
-        return header, self.string
+    in_string = remove_comments(import_string + '\n\n' + in_string)
+
+    header = '{' + description[2:-2] + '}\n\nunit ' + unit.strip()[8:] + ';\n\n'
+    return header, in_string
