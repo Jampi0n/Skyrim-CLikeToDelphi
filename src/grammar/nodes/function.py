@@ -16,7 +16,6 @@ def search_declarations(node):
 
 class Function(Node):
     def write(self, int_state, block=None):
-        block = int_state.functions
         void = self.children[0].string == 'void'
         block.append_line(('procedure ' if void else 'function ') + self.children[1].string + '(')
 

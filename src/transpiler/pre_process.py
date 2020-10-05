@@ -61,6 +61,38 @@ def resolve_import(import_path: str, start_dir: Path):
     return open(str(import_path), 'r').read() + '\n\n'
 
 
+def split(in_string):
+    """
+    Splits the string into delphi and non-delphi parts. Also removes comments from the non-delphi parts.
+    :param in_string:
+    :return:
+    """
+    in_string_list = ['']
+    delphi_string_list = []
+
+    delphi = False
+
+    for line in in_string.splitlines(keepends=True):
+        if not delphi:
+            if line.startswith('// delphi begin') or line.startswith('/* delphi begin'):
+                delphi = True
+                in_string_list[len(in_string_list) - 1] = remove_comments(in_string_list[len(in_string_list) - 1])
+                delphi_string_list.append('')
+            else:
+                in_string_list[len(in_string_list) - 1] += line
+        else:
+            if line.startswith('// delphi end') or line.startswith('delphi end */'):
+                delphi = False
+                in_string_list.append('')
+            else:
+                delphi_string_list[len(delphi_string_list) - 1] += line
+
+    assert not delphi
+    in_string_list[len(in_string_list) - 1] = remove_comments(in_string_list[len(in_string_list) - 1])
+
+    return in_string_list, delphi_string_list
+
+
 def pre_process(in_path):
     """
     Extracts the header and removes all comments.
@@ -82,7 +114,7 @@ def pre_process(in_path):
     if use_string != '':
         use_string += '\n\n'
 
-    in_string = remove_comments(import_string + '\n\n' + in_string)
+    in_string_list, delphi_string_list = split(import_string + '\n\n' + in_string)
 
     header = '{' + description[2:-2] + '}\n\nunit ' + unit.strip()[8:] + ';\n\n' + use_string
-    return header, in_string
+    return header, in_string_list, delphi_string_list

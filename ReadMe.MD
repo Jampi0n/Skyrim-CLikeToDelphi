@@ -44,21 +44,24 @@ Relative paths to the main file can be used:
 All paths that do not start with `./` or `../` are interpreted as absolute paths.
 This can be useful for shared imports.
 
-### Example
+### Delphi Code (Optional)
 
-This is an example of a correct header:
+If needed, delphi code can be written directly.
+There are two options to write delphi code:
 ```
-/*
-    This is am example script.
-*/
+// delphi begin
+...
+// delphi end
 
-// unit example_script
-
-// uses delphi_unit
-
-// import ./src/example_import.cs
-
+/* delphi begin
+...
+delphi end */
 ```
+When using an IDE, the body of the second option will be considered a comment and will prevent syntax warnings.
+
+You cannot use this feature for inline comments and only for top level elements, like functions.
+If you cannot implement a function with CLike, write the entire function in delphi instead.
+You can write a small delphi function containing the problematic part in order to minimize the delphi code.
 
 ## Special functions
 

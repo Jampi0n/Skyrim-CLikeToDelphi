@@ -38,12 +38,13 @@ class TextBlock:
 
 
 class IntermediateState:
-    def __init__(self, syntax_tree: SyntaxTree):
-        self.syntax_tree = syntax_tree
+    def __init__(self, syntax_tree_list: List[SyntaxTree], delphi_code_list):
+        self.syntax_tree_list = syntax_tree_list
+        self.delphi_code_list = delphi_code_list
 
         self.globals = TextBlock(1)
         self.constants = TextBlock(1)
-        self.functions = TextBlock()
+        self.functions = [TextBlock()] * len(syntax_tree_list)
         self.init = TextBlock(1)
 
         self.has_init = False
@@ -55,20 +56,23 @@ class IntermediateState:
         constants = []
         global_variables = []
         functions = []
-        for node in self.syntax_tree.get_top_level():
-            if isinstance(node, declaration.Constant):
-                constants.append(node)
-            elif isinstance(node, declaration.GlobalVariable):
-                global_variables.append(node)
-            elif isinstance(node, function.Function):
-                functions.append(node)
-                name = node.children[1].string
-                if name == '__initialize__':
-                    self.has_init = True
-                elif name == '__finalize__':
-                    self.has_finalize = True
-                elif name == '__process__':
-                    self.has_process = True
+        for i in range(len(self.syntax_tree_list)):
+            functions.append([])
+            syntax_tree = self.syntax_tree_list[i]
+            for node in syntax_tree.get_top_level():
+                if isinstance(node, declaration.Constant):
+                    constants.append(node)
+                elif isinstance(node, declaration.GlobalVariable):
+                    global_variables.append(node)
+                elif isinstance(node, function.Function):
+                    functions[i].append(node)
+                    name = node.children[1].string
+                    if name == '__initialize__':
+                        self.has_init = True
+                    elif name == '__finalize__':
+                        self.has_finalize = True
+                    elif name == '__process__':
+                        self.has_process = True
 
         for const in constants:
             const.write(self)
@@ -76,8 +80,9 @@ class IntermediateState:
         for glob in global_variables:
             glob.write(self)
 
-        for func in functions:
-            func.write(self)
+        for i in range(len(self.syntax_tree_list)):
+            for func in functions[i]:
+                func.write(self, self.functions[i])
 
     def add_to_init(self):
         pass
@@ -92,9 +97,11 @@ class IntermediateState:
             result += '\n\nvar\n'
             result += self.globals.write_program()
 
-        if len(self.functions.lines) > 0:
-            result += '\n\n// Functions\n\n'
-            result += self.functions.write_program()
+        result += '\n\n// Functions\n\n'
+        for i in range(len(self.syntax_tree_list)):
+            result += self.functions[i].write_program()
+            if i != len(self.syntax_tree_list) - 1:
+                result += self.delphi_code_list.pop()
 
         if len(self.init.lines) > 0:
             result += '\n\n// InitGlobals\n'
