@@ -65,9 +65,9 @@ You can write a small delphi function containing the problematic part in order t
 
 ## Special functions
 
-* \_\_initialize__()
-* \_\_process__(IInterface e)
-* \_\_finalize__()
+* `__initialize__()` This function is executed at the start of the script.
+* `__process__(IInterface e)` This function is executed for every selected element.
+* `__finalize__()` This function is executed at the end of the script.
 
 
 

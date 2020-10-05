@@ -44,7 +44,7 @@ class IntermediateState:
 
         self.globals = TextBlock(1)
         self.constants = TextBlock(1)
-        self.functions = [TextBlock()] * len(syntax_tree_list)
+        self.functions = [TextBlock() for _ in range(len(syntax_tree_list))]
         self.init = TextBlock(1)
 
         self.has_init = False
@@ -99,9 +99,11 @@ class IntermediateState:
 
         result += '\n\n// Functions\n\n'
         for i in range(len(self.syntax_tree_list)):
-            result += self.functions[i].write_program()
+            print(self.functions[i])
+            result += self.functions[i].write_program() + '\n\n'
             if i != len(self.syntax_tree_list) - 1:
-                result += self.delphi_code_list.pop()
+                delphi = self.delphi_code_list.pop(0) + '\n\n'
+                result += delphi
 
         if len(self.init.lines) > 0:
             result += '\n\n// InitGlobals\n'
