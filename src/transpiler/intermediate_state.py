@@ -73,8 +73,9 @@ class IntermediateState:
         for const in constants:
             const.write(self)
 
-        for glob in global_variables:
-            glob.write(self)
+        declaration.Declaration.write_declarations(global_variables, self.globals, self.init)
+        # for glob in global_variables:
+        #    glob.write(self)
 
         for func in functions:
             func.write(self)
@@ -115,6 +116,7 @@ class IntermediateState:
                 result += '    ' + '__init_globals__();\n'
             if self.has_init:
                 result += '    ' + '__initialize__();\n'
+            result += '    ' + 'Result := 0;\n'
             result += 'end;\n'
 
         if self.has_finalize:
@@ -123,6 +125,6 @@ class IntermediateState:
             result += '    ' + '__finalize__();\n'
             result += 'end;\n'
 
-        result += '\n\nend.'
+        result += '\n\nend'
 
         return result
