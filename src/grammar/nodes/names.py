@@ -1,22 +1,23 @@
 from src.transpiler.syntax_tree import *
 
 
-class VariableName(Node):
+class VariableName(Leaf):
     pass
 
 
 Node.node_map['VARIABLE_NAME'] = VariableName
 
 
-class FunctionName(Node):
+class FunctionName(Leaf):
     pass
 
 
 Node.node_map['FUNCTION_NAME'] = FunctionName
 
 
-class Type(Node):
+class Type(Leaf):
     def translated(self):
+        # Basic type translation.
         type_translation = {
             'int': 'Integer',
             'float': 'Real',

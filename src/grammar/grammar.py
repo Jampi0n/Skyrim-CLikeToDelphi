@@ -27,6 +27,7 @@ class CLike(Grammar):
     # declaration
     DECLARATION = seq(TYPE, VARIABLE_NAME, opt(Choice(seq('=', EXPRESSION), Repeat(seq(',', VARIABLE_NAME)))))
     GLOBAL = seq(DECLARATION, ';')
+    # The optional type is to be compatible with C# syntax.
     CONSTANT = seq(Keyword('const'), opt(TYPE), VARIABLE_NAME, '=', LITERAL, ';')
 
     # function

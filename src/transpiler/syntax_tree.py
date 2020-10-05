@@ -20,7 +20,7 @@ class Node:
         :param parent: Parent node.
         :param start: Start position in the code.
         :param end: End position in the code.
-        :param name: If it is a grammar node, this is the name of the grammer object.
+        :param name: If it is a grammar node, this is the name of the grammar object.
         :param element: What kind of node this is, e.g. Keyword, Token, Sequence, ...
         :param string: The code represented by this node.
         """

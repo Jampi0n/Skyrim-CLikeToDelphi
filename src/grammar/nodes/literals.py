@@ -2,6 +2,11 @@ from src.transpiler.syntax_tree import *
 
 
 def translate_string(string):
+    """
+    Translates a CLike string literal to a delphi string literal.
+    :param string:
+    :return:
+    """
     result = ''
     try:
         escape = False
@@ -33,9 +38,9 @@ def translate_string(string):
 
 class Literal(Leaf):
     def translated(self):
-        if self.string[0] == '"':
+        if self.string[0] == '"':  # Literal is a string literal.
             return '\'' + translate_string(self.string[1:-1]) + '\''
-        return self.string
+        return self.string  # Other literals (number) do not change.
 
 
 Node.node_map['LITERAL'] = Literal
