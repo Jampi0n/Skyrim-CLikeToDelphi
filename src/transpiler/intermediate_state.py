@@ -106,16 +106,17 @@ class IntermediateState:
 
         # Constants.
         if len(self.constants.lines) > 0:
-            result += '\n\nconst\n'
+            result += 'const\n'
             result += self.constants.write_program()
+            result += '\n\n'
 
         # Global variables.
         if len(self.globals.lines) > 0:
-            result += '\n\nvar\n'
+            result += 'var\n'
             result += self.globals.write_program()
+            result += '\n\n'
 
         # Functions.
-        result += '\n\n// Functions\n\n'
         for i in range(len(self.syntax_tree_list)):
             result += self.functions[i].write_program() + '\n'
             if i != len(self.syntax_tree_list) - 1:

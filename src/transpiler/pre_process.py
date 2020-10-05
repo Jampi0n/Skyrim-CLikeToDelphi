@@ -126,7 +126,7 @@ def pre_process(in_path):
     if use_string != '':
         use_string = '\n\n' + use_string
 
-    header = '{' + description[2:-2] + '}\n\nunit ' + unit.strip()[8:] + ';' + use_string
+    header = '{' + description[2:-2] + '}\n\nunit ' + unit.strip()[8:] + ';' + use_string + '\n\n'
 
     # main part
     in_string_list, delphi_string_list = split(import_string + '\n\n' + in_string)
