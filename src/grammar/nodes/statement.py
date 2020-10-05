@@ -1,15 +1,19 @@
 from src.transpiler.syntax_tree import *
 from src.grammar.nodes.declaration import Declaration
 from src.grammar.nodes.expression import Expression
-from src.grammar.nodes.comment import Cmt
 
 
 class Statement(Node):
     def write(self, int_state, block=None):
-        for c in self.children:
-            if isinstance(c, Cmt):
-                block.append_line('')
-            c.write(int_state, block)
+        declaration = self.children[0]
+        if isinstance(declaration, Declaration):
+            declaration.write(int_state, block)
+            if declaration.is_init():
+                self.children[1].write(int_state, block)
+
+        else:
+            for c in self.children:
+                c.write(int_state, block)
 
 
 Node.node_map['STATEMENT'] = Statement

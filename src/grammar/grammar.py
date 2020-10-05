@@ -14,13 +14,6 @@ class CLike(Grammar):
     STATEMENT = Ref()
     STATEMENT_BLOCK = Ref()
 
-    # comments
-    COMMENT_SINGLE = Regex('\\s*//.*\\n')
-    COMMENT_MULTI = Regex('\\s*/\\*[^*]*\\*+(?:[^/*][^*]*\\*+)*/\\s*')
-    LINE_END = Regex('; *(?:/\\*[^*]*\\*+(?:[^/*][^*]*\\*+)*/ *)*(?://.*)?\\n')
-    COMMENT = Choice(COMMENT_SINGLE, COMMENT_MULTI)
-    CMT = opt(COMMENT)
-
     # names
     VARIABLE_NAME = Regex(WORD)
     TYPE = Regex(WORD)
@@ -32,10 +25,9 @@ class CLike(Grammar):
     LITERAL = Choice(STRING_LITERAL, NUMBER_LITERAL)
 
     # declaration
-    DECLARATION = seq(TYPE, CMT, VARIABLE_NAME, CMT,
-                      opt(Choice(seq('=', EXPRESSION), Repeat(seq(',', CMT, VARIABLE_NAME, CMT)))))
-    GLOBAL = seq(DECLARATION, LINE_END)
-    CONSTANT = seq(Keyword('const'), opt(TYPE), VARIABLE_NAME, '=', LITERAL, LINE_END)
+    DECLARATION = seq(TYPE, VARIABLE_NAME, opt(Choice(seq('=', EXPRESSION), Repeat(seq(',', VARIABLE_NAME)))))
+    GLOBAL = seq(DECLARATION, ';')
+    CONSTANT = seq(Keyword('const'), opt(TYPE), VARIABLE_NAME, '=', LITERAL, ';')
 
     # function
     PARAMETER = seq(TYPE, VARIABLE_NAME)
@@ -46,7 +38,6 @@ class CLike(Grammar):
     EXPRESSION = Prio(
         LITERAL,
         VARIABLE_NAME,
-        seq(CMT, THIS, CMT),
         seq('!', THIS),
         seq('-', THIS),
 
@@ -90,11 +81,11 @@ class CLike(Grammar):
 
     EXPRESSION_STATEMENT = seq(EXPRESSION, ';')
 
-    STATEMENT = Choice(RETURN, THROW, seq(ASSIGNMENT, ';'), seq(DECLARATION, LINE_END), IF, WHILE, FOR,
-                       TRY, CONTINUE, BREAK, EXPRESSION_STATEMENT, CMT)
+    STATEMENT = Choice(RETURN, THROW, seq(ASSIGNMENT, ';'), seq(DECLARATION, ';'), IF, WHILE, FOR,
+                       TRY, CONTINUE, BREAK, EXPRESSION_STATEMENT)
 
     STATEMENT_BLOCK = seq('{', Repeat(STATEMENT), '}')
 
     # start
-    PROGRAM_PART = Choice(CMT, CONSTANT, GLOBAL, FUNCTION)
+    PROGRAM_PART = Choice(CONSTANT, GLOBAL, FUNCTION)
     START = Repeat(PROGRAM_PART)
