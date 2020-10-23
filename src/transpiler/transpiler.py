@@ -22,16 +22,6 @@ class Transpile:
         # Pre-process the file.
         self.header, self.in_string_list, self.delphi_string_list = pre_process(in_path)
 
-        # Save independent sections of the source file to temporary files for debugging.
-        for i in range(len(self.in_string_list)):
-            tmp_path = Path(out_path).absolute().parent.joinpath(Path('tmp_' + str(i * 2) + '_source.cs'))
-            tmp_file = open(tmp_path, 'w')
-            tmp_file.write(self.in_string_list[i])
-        for i in range(len(self.delphi_string_list)):
-            tmp_path = Path(out_path).absolute().parent.joinpath(Path('tmp_' + str(i * 2 + 1) + '_delphi.pas'))
-            tmp_file = open(tmp_path, 'w')
-            tmp_file.write(self.delphi_string_list[i])
-
         # Create grammar object
         self.grammar = CLike()
 

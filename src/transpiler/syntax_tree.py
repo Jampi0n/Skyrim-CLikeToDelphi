@@ -1,6 +1,10 @@
 from pyleri import Grammar
-from graphviz import Digraph
 from typing import *
+
+try:
+    from graphviz import Digraph
+except ImportError:
+    Digraph = None
 
 
 class Node:
@@ -115,7 +119,8 @@ class SyntaxTree:
 
         # The string must be valid.
         if not result.is_valid:
-            assert False, result.as_str() + '\n' + string[result.pos - 30:result.pos + 30]
+            assert False, 'The input code contains syntax errors:\n' \
+                          + result.as_str() + '\nSurrounding code:\n' + string[result.pos - 30:result.pos + 30] + ''
 
         # Root node of the pyleri syntax tree.
         start = result.tree.children[0] if result.tree.children else result.tree
@@ -181,6 +186,7 @@ class SyntaxTree:
         self.root = parse_tree(start, None, None)
 
     def draw(self):
+        assert Digraph is not None, 'Module graphviz is required in order to draw the syntax tree.'
         graph = Digraph(comment='syntax tree')
         self.root.draw(graph, None)
         graph.render('out/syntax_tree.gv', view=False)

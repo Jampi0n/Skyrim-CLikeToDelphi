@@ -150,6 +150,6 @@ class IntermediateState:
             result += '    ' + '__finalize__();\n'
             result += 'end;\n\n'
 
-        result += 'end'
+        result += 'end.'
 
         return result

@@ -1,25 +1,38 @@
 # CLike to Delphi transpiler
 
 This transpiler translates CLike code to Delphi for xEdit scripts.
+If you prefer the standard c/Java syntax over Delphi syntax, you can use this transpiler to produce xEdit scripts without writing Delphi. 
 
-## Introduction
+## About CLike
 
-The source language is not c, but a independent function with syntax similar to c.
+CLike is the name of the input language and it uses a syntax very similar to c, hence the name.
+The transpiler is mostly a syntax translator, since it only does basic transformations.
+You need to understand Delphi, since you will need to call Delphi functions.
 
-## Limitations
+The main syntactical differences between CLike and Delphi are:
+* Assignment with `=` instead of `:=`.
+* Assignments with `+=`, `*=`, etc.
+* Function definitions are like in c/Java: `ReturnType FunctionName(Type Parameter, ...) {...}` 
+* Local variables can be declared (with optional initialization) inside functions.
+* Global variables can be initialized when they are declared.
+* Strings behave like in c/Java, use double quotes and support common special characters like `\n`
 
-The target language is limited and these limitations also affect the source language:
+Statements work like in c/Java. The following statements are implemented:
+* If, Else
+* While
+* Break
+* Continue
+* Return
+* Try, Catch, Finally
+* Throw
 
-* No arrays. Use the TList object instead.
-* No return statement. Assign a value to Result (implicitly declared).
-* No break statement.
-* No ternary condition operator.
-* All local variables have the entire functions as scope.
-* The for statement is very basic. If complex logic is required, manually write it with while.
+The `For` statement is only very basic. Use it for counting: `for(int i=0;i<10;i+=1){...}`. For more advanced loops, use While.
+
+Syntax highlighting for c# fits well for CLike, because it supports exceptions, constants and global variables like they are implemented in CLike.  
 
 ## Header
 
-The script must start with the header.
+The CLike script must start with the header.
 
 ### Description (Required)
 

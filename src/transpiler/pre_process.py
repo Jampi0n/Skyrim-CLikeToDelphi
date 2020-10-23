@@ -1,9 +1,8 @@
 import re
-from enum import Enum
 from pathlib import Path
 
 
-class ReadState(Enum):
+class ReadState:
     NORMAL = 1
     STRING = 2
     SINGLE_COMMENT = 3
