@@ -28,9 +28,14 @@ Statements work like in c/Java. The following statements are implemented:
 
 The `For` statement is only very basic. Use it for counting: `for(int i=0;i<10;i+=1){...}`. For more advanced loops, use While.
 
-Syntax highlighting for c# fits well for CLike, because it supports exceptions, constants and global variables like they are implemented in CLike.  
+Syntax highlighting for c# fits well for CLike, because it supports exceptions, constants and global variables like they are implemented in CLike.
 
-## Header
+## Usage
+
+Install python 3 and the required libraries from requirements.txt.
+Run `CLikeToDelphi.py <Input Path> <Output Path>`. For more information, run `CLikeToDelphi.py --help`
+
+## CLike Program Structure
 
 The CLike script must start with the header.
 
@@ -74,7 +79,7 @@ When using an IDE, the body of the second option will be considered a comment an
 
 You cannot use this feature for inline comments and only for top level elements, like functions.
 If you cannot implement a function with CLike, write the entire function in delphi instead.
-You can write a small delphi function containing the problematic part in order to minimize the delphi code.
+You can write a small delphi function containing the problematic part in order to minimize the Delphi code.
 
 ## Special functions
 

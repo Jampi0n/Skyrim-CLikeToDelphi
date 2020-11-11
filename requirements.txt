@@ -1,2 +1,4 @@
 pyleri
 graphviz
+pywin32
+cx_Freeze
