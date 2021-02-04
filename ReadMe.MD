@@ -37,7 +37,7 @@ Run `CLikeToDelphi.py <Input Path> <Output Path>`. For more information, run `CL
 
 ## CLike Program Structure
 
-The CLike script must start with the header.
+The CLike script must/can contain the following parts:
 
 ### Description (Required)
 
@@ -46,15 +46,15 @@ The multi line comment is between `'/*'` and `'*/'`.
 
 ### Unit (Required)
 
-A single line comment starting with `// unit name` specifies the delphi unit.
+A single line comment starting with `// unit <name>` specifies the delphi unit.
 
 ### Uses (Optional)
 
-To import other delphi units, use `// uses name`.
+To import other delphi units, use `// uses <name>`.
 
 ### Imports (Optional)
 
-Single line comments starting with `// import path` can be used to split your project into multiple files.
+Single line comments starting with `// import <path>` can be used to split your project into multiple files.
 Relative paths to the main file can be used:
 * `./` specifies the directory of the main file.
 * `../` specifies the parent directory of the main file.
@@ -87,7 +87,7 @@ You can write a small delphi function containing the problematic part in order t
 * `__process__(IInterface e)` This function is executed for every selected element.
 * `__finalize__()` This function is executed at the end of the script.
 
+## Examples
 
-
-
+* [Jampi0n/Skyrim-LoadScreenGenerator](https://github.com/Jampi0n/Skyrim-LoadScreenGenerator)
   
